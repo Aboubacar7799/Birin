@@ -23,6 +23,16 @@ class CreateNewUser implements CreatesNewUsers
      *
      * @param  array<string, string>  $input
      */
+
+    // Verifier si la connexion internet est activée
+    public function checkInternetConnexion(){
+        try{
+            $response = Http::timeout(5)->get('http://www.google.com');
+            return $response -> successful();
+        }catch (\Exception $e){
+            return false;
+        }
+    }
     public function create(array $input): User
     {
         //recuperation de l'email

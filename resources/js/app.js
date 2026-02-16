@@ -2,6 +2,7 @@ import './bootstrap';
 
 import { createApp } from 'vue/dist/vue.esm-bundler.js';
 import FollowButton from './components/FollowButton.vue';
+import DeleteAccount from './components/DeleteAccount.vue';
 
 
 
@@ -10,10 +11,12 @@ if (siExiste) {
     const app = createApp({
         components: {
             FollowButton,
+            DeleteAccount,
         },
     });
     app.component('followbutton', FollowButton);
+    app.component('deleteaccount', DeleteAccount);
     app.mount("#app");
 
-        require('./like.js');
+    require('./like.js');
 }

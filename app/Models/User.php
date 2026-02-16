@@ -8,13 +8,14 @@ use App\Models\Notification;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -31,6 +32,9 @@ class User extends Authenticatable
         'etat',
         'activation_code',
         'activation_token',
+        'is_deactivated',
+        'scheduled_deletion_at',
+        'cancellation_token',
     ];
 
     /**
@@ -43,6 +47,8 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $dates = ['scheduled_deletion_at','deleted_at'];
+
     /**
      * The attributes that should be cast.
      *
@@ -50,6 +56,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'deletion_feedback' => 'array',
     ];
 
 
@@ -80,7 +87,10 @@ class User extends Authenticatable
         return $this->belongsToMany(\App\Models\Profil::class, 'profil_user', 'user_id', 'profil_id');
     }
 
-    
+    //la relation user commentaire
+    public function comments(){
+        return $this->hasMany(\App\Models\Comment::class);
+    }
 
     //la relation entre users et likes
     Public function likes(){
@@ -108,12 +118,6 @@ class User extends Authenticatable
         return $this->lastSeen() ? Carbon::parse($this->lastSeen())->diffForHumans() : 'hors ligne';
     }
 
-
-    // public function isOnlineMessage()
-    // {
-    //     return Cache::has('last_see_at' . $this->id);
-    // }
-
     //Relations des notifications sur la plateform
     public function notifications()
     {
@@ -124,11 +128,38 @@ class User extends Authenticatable
     public function contacts(){
 
         $profilIdsIFollow = $this->following()->pluck('profils.id');
-        
         return User::whereHas('profil',function($q) use ($profilIdsIFollow){
             $q->whereIn('id',$profilIdsIFollow);
         })->whereHas('followers',function($q){
             $q->where('follower_id', $this->id);
+        });
+    }
+
+    // Pour supprimer les commentaires, followers, following,like après suppression d'un user
+    protected static function booted(){
+        static::deleting(function($user){
+            // Supprimer posts + leurs commentaires/likes via cascade
+            foreach($user->posts as $post){
+                $post->delete();
+            }
+
+            // Supprimer commentaires faits par le user
+            $user->comments()->delete();
+
+            // Supprimer likes faits par le user
+            $user->likes()->delete();
+
+            //Supprimer followers
+            $user->followers()->detach();
+
+            // Supprimer following
+            $user->following()->detach();
+
+            // Supprimer notifications
+            $user->notifications()->delete();
+
+            // Supprimer le profil
+            $user->profil()->delete();
         });
     }
 

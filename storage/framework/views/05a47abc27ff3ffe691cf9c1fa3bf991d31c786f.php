@@ -43,7 +43,7 @@
                             
                             <div>
                                 <span class="fw-bold d-block"><?php echo e($registeredUser->name); ?></span>
-                                <small class="text-muted">Inscrit il y'a <?php echo e($registeredUser->created_at->diffForHumans()); ?></small>
+                                <small class="text-muted">Inscrit <?php echo e($registeredUser->created_at->diffForHumans()); ?></small>
                             </div>
                         </div>
                     </a>

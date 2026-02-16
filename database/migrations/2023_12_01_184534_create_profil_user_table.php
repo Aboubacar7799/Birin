@@ -15,8 +15,8 @@ class CreateProfilUserTable extends Migration
     {
         Schema::create('profil_user', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('profil_id')->index();
-            $table->unsignedBigInteger('user_id')->index();
+            $table->foreignId('profil_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

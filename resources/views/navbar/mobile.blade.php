@@ -20,7 +20,7 @@
         <a href="{{ route('index') }}" class="position-relative">
             <i class="fa-solid fa-comment text-secondary"></i>
             @if ($unreadMessagesCount->sum() > 0)
-                <span class="position-absolute top-5 translate-middle rounded-pill bg-danger fobic"></span>
+                <span class="position-absolute top-5 translate-middle rounded-circle bg-info fobic"></span>
             @endif
         </a>
 
@@ -29,14 +29,21 @@
             <i class="fa-solid fa-bell text-secondary"></i>
             @if ($unreadNotificationsCount > 0)
                 <span
-                    class="position-absolute top-5 start-75 translate-middle badge rounded-pill bg-danger">{{ $unreadNotificationsCount }}</span>
+                    class="position-absolute top-5 start-75 translate-middle badge rounded-circle bg-info text-dark">{{ $unreadNotificationsCount }}</span>
             @endif
 
         </a>
 
         {{-- Menu --}}
         <button data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
-            <i class="fa-solid fa-ellipsis-vertical"></i>
+            <img
+                src="{{ asset('assets/svg/menu.svg') }}"
+                class="img-fluid"
+                alt=""
+                width="20"
+                height="30"
+            />
+            
         </button>
 
     </div>
@@ -69,8 +76,29 @@
             <i class="fa-solid fa-right-from-bracket"></i> Déconnexion &nbsp;
         </a>
     </div>
-    <div class="row fixed-bottom m-4 text-muted">
-        <div>BIRIN Copyright © {{ date('Y') }} | Developpé par l'equipe Heluxix</div>
-    </div>
+
+    <footer class="footer mt-5 py-3">
+        <div class="container">
+            <div class="row text-center text-md-start align-items-center">
+
+                <div class="col-12 col-md-6 mb-2 mb-md-0">
+                    BIRIN © {{ date('Y') }} | Développé par l'équipe Heluxix
+                </div>
+
+                <div class="col-12 col-md-6 text-md-end">
+                    Version 1.0
+                </div>
+
+            </div>
+        </div>
+    </footer>
+    <style>
+        .footer {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eaeaea;
+        }
+    </style>
 
 </div>

@@ -26,7 +26,7 @@
                         href="<?php echo e(route('index')); ?>"> Messages
                         <?php if($unreadMessagesCount->sum() > 0): ?>
                             <span
-                                class="position-absolute top-5 translate-middle rounded-pill bg-danger fobic"></span>
+                                class="position-absolute top-5 translate-middle rounded-circle bg-info fobic"></span>
                         <?php endif; ?>
                     </a>
                 </li>
@@ -37,7 +37,7 @@
                         Notification <i class="fa-solid fa-bell text-warning"></i>
                         <?php if($unreadNotificationsCount > 0): ?>
                             <span
-                                class="position-absolute top-5 start-75 translate-middle badge rounded-pill bg-danger"><?php echo e($unreadNotificationsCount); ?></span>
+                                class="position-absolute top-5 start-75 translate-middle badge rounded-circle bg-info text-dark"><?php echo e($unreadNotificationsCount); ?></span>
                         <?php endif; ?>
                     </a>
                 </li>

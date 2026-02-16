@@ -32,7 +32,7 @@
                     <div class="col-md-12">
                         <div class="input-group custom-file mb-3">
                             <label class="input-group-text custom-file-label" for="image" title="choisir une image">Choisir une image</label>
-                            <input type="file" name="image" id="image" class="form-control custom-file-input @error('image') is-invalid @enderror" title="choisir une image">
+                            <input type="file" name="images[]" id="image" class="form-control custom-file-input @error('image') is-invalid @enderror" title="choisir une image" multiple required>
 
                             @error('image')
                                 <small class="invalid-feedback fw-bold" role="alert">

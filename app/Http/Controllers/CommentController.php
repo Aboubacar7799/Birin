@@ -36,22 +36,36 @@ class CommentController extends Controller
         ]);
     }
 
-    public function edit(Request $request, Comment $comments)
-    {
+    // public function edit(Request $request, Comment $comments)
+    // {
 
-        return view('posts.comments.edit', compact('comments'));
+    //     return view('posts.comments.edit', compact('comments'));
+    // }
+
+    // public function update(Request $request, Comment $comments)
+    // {
+
+    //     $request->validate(['content' => 'required|string|max:2000']);
+
+    //     $comments->comments()->update([
+    //         'user_id' => auth()->id(),
+    //         'content' => $request->content
+    //     ]);
+
+    //     return redirect()->route('comments.store', ['comments' => $comments,]);
+    // }
+
+
+    public function update(Request $request, Comment $comment){
+        $this->authorize('update', $comment); // Assurez-vous que c'est le propriétaire
+        $request->validate(['content' => 'required|string']);
+        $comment->update(['content' => $request->content]);
+        return response()->json(['content' => $comment->content]);
     }
 
-    public function update(Request $request, Comment $comments)
-    {
-
-        $request->validate(['content' => 'required|string|max:2000']);
-
-        $comments->comments()->update([
-            'user_id' => auth()->id(),
-            'content' => $request->content
-        ]);
-
-        return redirect()->route('comments.store', ['comments' => $comments,]);
+    public function destroy(Comment $comment){
+        $this->authorize('delete', $comment);
+        $comment->delete();
+        return response()->json(['success' => true]);
     }
 }

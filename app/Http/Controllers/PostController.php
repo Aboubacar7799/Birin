@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Like;
 use App\Models\Post;
+use App\Models\PostImage;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
@@ -25,36 +26,57 @@ class PostController extends Controller
     {
         $data = request()->validate([
             'desc' => ['required', 'string'],
-            'image' => ['required', 'image'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png','max:4096'],
         ]);
 
-        // 1. Générer un nom unique pour l'image
-        $imageName = time() . '.' . request('image')->getClientOriginalExtension();
-        $imagePath = 'posts/' . $imageName;
+        // // 1. Générer un nom unique pour l'image
+        // $imageName = time() . '.' . request('images')->getClientOriginalExtension();
+        // $imagePath = 'posts/' . $imageName;
 
-        // 2. Utiliser Intervention Image pour traiter l'image
-        $manager = new ImageManager(new Driver());
-        $image = $manager->read(request('image'));
+        // // 2. Utiliser Intervention Image pour traiter l'image
+        // $manager = new ImageManager(new Driver());
+        // $image = $manager->read(request('images'));
 
-        // Optionnel : Redimensionner l'image pour qu'elles soient toutes carrées (ex: 800x800)
-        $image->cover(800, 800);
+        // // Optionnel : Redimensionner l'image pour qu'elles soient toutes carrées (ex: 800x800)
+        // $image->cover(800, 800);
 
-        // 3. Sauvegarder l'image physiquement dans storage/app/public/posts
-        // On utilise storage_path pour pointer au bon endroit sur le serveur
-        $image->save(storage_path('app/public/' . $imagePath));
+        // // 3. Sauvegarder l'image physiquement dans storage/app/public/posts
+        // // On utilise storage_path pour pointer au bon endroit sur le serveur
+        // $image->save(storage_path('app/public/' . $imagePath));
 
-        // 4. Enregistrer en base de données
-        auth()->user()->posts()->create([
-            'description' => $data['desc'],
-            'image' => $imagePath, // On stocke "posts/nom.jpg"
-        ]);
+        // // 4. Enregistrer en base de données
+        // auth()->user()->posts()->create([
+        //     'description' => $data['desc'],
+        //     'images' => $imagePath, // On stocke "posts/nom.jpg"
+        // ]);
 
-        return redirect()->route('app_profil', ['user' => auth()->user()]);
+        // Création du post sans image
+        $post = auth()->user()->posts()->create(['description' => $data['desc']]);
+
+        // upload plusieurs images
+        if(request()->hasFile('images')){
+            foreach(request()->file('images') as $file){
+                $imageName = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+                $imagePath = 'posts/'.$imageName;
+
+                $manager = new ImageManager(new Driver());
+                $image = $manager->read($file);
+
+                // Le recadrement de l'image
+                $image->cover(800,800);
+                $image->save(storage_path('app/public/'.$imagePath));
+                $post->images()->create(['image' => $imagePath]);
+
+            }
+        }
+        return redirect()->route('app_profil', ['user' => auth()->user()])->with("success","Publication effectué avec succès");
     }
 
-    public function afficheImage(Post $post){
-        
-        return view('posts.affiche_image',compact('post'));
+    public function afficheImage(Post $post, PostImage $image){
+        if($image->post_id !== $post->id){
+            abort(404);
+        }
+        return view('posts.affiche_image',compact('post','image'));
     }
 
     //La page qui contient la publication des profils suivis
@@ -108,4 +130,17 @@ class PostController extends Controller
             ]);
         }
     }
+
+    // suppression d'un post
+    public function destroy(Post $post)
+{
+    $this->authorize('delete', $post);
+
+    $post->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Publication supprimé avec succès'
+    ]);
+}
 }

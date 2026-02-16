@@ -12,6 +12,13 @@
     </div>
 <?php endif; ?>
 
+<?php if(Session::has('email')): ?>
+    <div class="alert alert-danger text-center" role="alert">
+        <?php echo e(Session::get('email')); ?>
+
+    </div>
+<?php endif; ?>
+
 <?php if(Session::has('warning')): ?>
     <div class="alert alert-warning text-center" role="alert">
         <?php echo e(Session::get('warning')); ?>

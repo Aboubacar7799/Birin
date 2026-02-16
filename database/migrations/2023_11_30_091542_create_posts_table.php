@@ -16,8 +16,7 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('description')->nullable();
-            $table->string('image');
-            $table->unsignedBigInteger('user_id')->index();//c'est une clé etrangere provenant de la table user
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');//c'est une clé etrangere provenant de la table user
             $table->timestamps();
         });
     }

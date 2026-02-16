@@ -38,4 +38,12 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, \Throwable $e){
+        if($e->getMessage() === "Connexion internet non disponible."){
+            return redirect()->back()->with("danger","La connexion internet n'est pas activée.");
+        }
+
+        return parent::render($request, $e);
+    }
 }

@@ -26,7 +26,7 @@
                         href="{{ route('index') }}"> Messages
                         @if ($unreadMessagesCount->sum() > 0)
                             <span
-                                class="position-absolute top-5 translate-middle rounded-pill bg-danger fobic"></span>
+                                class="position-absolute top-5 translate-middle rounded-circle bg-info fobic"></span>
                         @endif
                     </a>
                 </li>
@@ -37,7 +37,7 @@
                         Notification <i class="fa-solid fa-bell text-warning"></i>
                         @if ($unreadNotificationsCount > 0)
                             <span
-                                class="position-absolute top-5 start-75 translate-middle badge rounded-pill bg-danger">{{ $unreadNotificationsCount }}</span>
+                                class="position-absolute top-5 start-75 translate-middle badge rounded-circle bg-info text-dark">{{ $unreadNotificationsCount }}</span>
                         @endif
                     </a>
                 </li>

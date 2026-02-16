@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Like;
+use App\Models\PostImage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,17 +22,6 @@ class Post extends Model
     Public function likes(){
 	    return $this->hasmany(Like::class);
     }
-
-    //on retourne si le post est liker ou pas par user connecté et la fonction isEmpty qui verifie si c'est vide on retourne false sinon on retourne true le contraire 
-    // public function estLikerParAuthUser(){
-
-    //     if (!auth()->check())
-    //     {
-    //         return false;
-    //     }
-        
-    //     return $this->likes->where('user_id', auth()->id)->isEmpty()->exists();
-    // }
 
     public function getImageUrl(){
         if($this->image && Storage::disk('public')->exists($this->image)){
@@ -57,6 +47,7 @@ class Post extends Model
         return $this->likes()->where('user_id', auth()->id())->first();
     }
 
-    
-
+    public function images(){
+        return $this->hasMany(PostImage::class);
+    }
 }

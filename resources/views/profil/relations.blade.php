@@ -43,7 +43,7 @@
                             
                             <div>
                                 <span class="fw-bold d-block">{{ $registeredUser->name }}</span>
-                                <small class="text-muted">Inscrit il y'a {{ $registeredUser->created_at->diffForHumans() }}</small>
+                                <small class="text-muted">Inscrit {{ $registeredUser->created_at->diffForHumans() }}</small>
                             </div>
                         </div>
                     </a>

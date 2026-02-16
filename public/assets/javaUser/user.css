@@ -46,6 +46,73 @@
 }
 
 
+.postImages{
+    display: grid;
+    border-radius: 12px;
+    gap: 5px;
+    overflow: hidden;
+}
+
+.postImages img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+}
+
+.images-1{
+    grid-template-columns: 1fr;
+}
+.images-1 img{
+    height: 450px;
+}
+
+.images-2{
+    grid-template-columns: repeat(2,1fr);
+}
+.images-2 img{
+    height: 400px;
+}
+
+.images-3{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: repeat(2, 250px);
+    gap: 2px;
+}
+.images-3 .image-wrapper:first-child{
+    grid-row: span 2;
+}
+
+.images-4{
+    grid-template-columns: repeat(2,1fr);
+    grid-template-rows: repeat(2,250px);
+
+}
+.images-multiple{
+    grid-template-columns: repeat(2,1fr);
+    grid-auto-rows: 200px;
+}
+
+.image-wrapper{
+    position: relative;
+}
+
+.overlay{
+    position: absolute;
+    inset:0;
+    background: rgba(0, 0, 0, O.6);
+    color:rgba(40, 40, 40, 0.85);
+    font-size: 2rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+
 
 /* la messagerie */
 
@@ -86,8 +153,9 @@
 .navbar .badge{
     font-size: 0.7rem;
     padding: 4px 6px;
-    border-radius: 50px;
+    border-radius: 50%;
 }
+
 
 /* marquer le point rouge sur le message de navbar et mobile */
 .navbar .fobic{
@@ -98,12 +166,12 @@
 
 
 /* Style de la page Contact */
-.contact-list{
+/* .contact-list{
     display: flex;
     flex-direction: column;
     gap: 12px;
     max-width: 420px;
-}
+} */
 
 .contact-item{
     display: flex;

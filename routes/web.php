@@ -12,7 +12,8 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\ContactController;
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ContactController; 
 use App\Http\Controllers\FollowControllers;
 use Symfony\Component\HttpFoundation\Request; // Assure-toi d'avoir ce contrôleur pour la logique de suivi
 use App\Http\Controllers\ConversationController;
@@ -30,8 +31,7 @@ use App\Http\Controllers\NotificationController;
 */
 
 
-/*Les Routes pour tout qui conserne l'Authentification*/
-
+/*Les Routes pour tout qui conserne l'Authentification de l'utilisateur*/
 Route::controller(LoginController::class)->group(function() {
     Route::get('/logout','logout')->name('app_logout');
     Route::post('/existe','existeEmail')->name('app_existe_email');
@@ -59,12 +59,12 @@ Route::controller(PostController::class)->group(function(){
     Route::match(['get', 'post'],'/posts/create','create')->middleware('auth')->name('app_post_create');
     //Pour créer un Post ou publication
     Route::post('/posts','store')->middleware('auth')->name('app_post_store');
-    //Pour afficher les différents images quand t-on click dessus
-    Route::get('/posts/{post}','afficheImage')->middleware('auth')->name('app_affiche_image');
+    //Pour afficher les différentes images quand t-on click dessus
+    Route::get('/posts/{post}/images/{image}','afficheImage')->middleware('auth')->name('app_affiche_image');
     //Pour afficher les différents Post ou Publication
     Route::get('/','index')->middleware('auth')->name('app_post_index');
-    //Pour permettre de liker ou disliker
-    // Route::post('/like','like')->name('app_post_like');
+    //Pour permettre de supprimer un post ou publication
+    Route::delete('/posts/{post}', 'destroy')->middleware('auth')->name('posts.destroy');
 
 });
 
@@ -73,8 +73,7 @@ Route::post('/reaction/ajax', [LikeController::class, 'ajax'])->middleware('auth
 
 /*Les Routes pour le Following, les methodes de Suivies*/
 Route::controller(FollowController::class)->group(function(){
-    Route::post('/follows/{profil}','store')->name('app_follows_store');
-    // Route::get('/following','listeFollowing')->name('app_Following_liste');
+    Route::post('/follows/{profil}','store')->middleware('auth')->name('app_follows_store');
 });
 
 /*Les Routes de la Messagerie*/
@@ -95,9 +94,11 @@ Route::controller(ConversationController::class)->group(function(){
 
 // --- Routes pour les Commentaires ---
 // Route pour enregistrer un commentaire (utilisée par notre script AJAX)
-Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->middleware('auth')->name('comments.store');
-Route::get('/comments/{comments}/edit', [CommentController::class, 'edit'])->middleware('auth')->name('app_comment_edit');
-Route::patch('/comments/{comments}',[CommentController::class,'update'])->middleware('auth')->name('app_comment_update');
+Route::controller(CommentController::class)->group(function(){
+    Route::post('/posts/{post}/comments',  'store')->middleware('auth')->name('comments.store');
+    Route::put('/comments/{comment}',  'update')->middleware('auth')->name('comments.update');
+    Route::delete('/comments/{comment}',  'destroy')->middleware('auth')->name('comments.destroy');
+});
 
 
 
@@ -111,7 +112,7 @@ Route::get('/profil/{user}/relations', function (User $user, Request $request) {
 
     return view('profil.relations', [
         'user' => $user, //profil consulté
-        'allUsers' => $allUsers,
+        'allUsers' => $allUsers, //L'ensemble des utilisateurs sur decouvrir
         'tab' => $request->get('tab','discover'),
     ]);
 })->name('app_relations_index')->middleware('auth');
@@ -124,10 +125,10 @@ Route::controller(ProfilController::class)->group(function () {
     Route::patch('/profil/{user}', 'update')->middleware('auth')->name('app_profil_update');
 });
 
-// Route pour l'action de suivre/ne plus suivre (appelée par ton composant FollowButton)
-Route::post('/follow/{profilId}', [FollowControllers::class, 'toggle'])->name('app_follow_toggle');
+// Route pour l'action de suivre/ne plus suivre (appelée par le composant FollowButton)
+Route::post('/follow/{profilId}', [FollowControllers::class, 'toggle'])->middleware('auth')->name('app_follow_toggle');
 
-
+// La route pour faire un commentaire
 Route::get('/posts/{post}/comments', function (Post $post) {
     return view('posts.comments', compact('post'));
 })->middleware('auth')->name('posts.comments');
@@ -139,7 +140,18 @@ Route::middleware('auth')->group(function(){
 });
 
 //Les routes pour le contact et à propos
- Route::get('/contact',[ContactController::class, 'index'])->name('app_contact_index');
-//  Route::post('/contact',[ContactController::class, 'store'])->name('app_contact_store');
+ Route::get('/contact',[ContactController::class, 'index'])->middleware('auth')->name('app_contact_index');
+ Route::get('/about',[AboutController::class, 'index'])->middleware('auth')->name('app_about');
 
- Route::get('/about',[AboutController::class, 'index'])->name('app_about');
+ //Les routes pour la suppression de son compte user
+ Route::middleware('auth')->group(function(){
+    // Page qui affiche le composant vue
+    Route::get('/account/delete', function(){
+        return view('profil.delete');
+    })->name('app_account_delete_page');
+
+    // Action de suppression
+    Route::post('/account/delete',[AccountController::class,'requestDelection'])->name('app_account_delete');
+    });
+// Annulation via email (pas besoin être connecté)
+Route::get('/account/cancel/{token}',[AccountController::class,'cancelDeletion'])->name('app_account_cancel');

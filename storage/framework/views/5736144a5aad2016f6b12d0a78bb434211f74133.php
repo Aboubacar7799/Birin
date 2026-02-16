@@ -7,17 +7,16 @@
 <?php $__env->startSection('content'); ?>
     <div class="container mt-5">
         <div class="row">
-            <div class="col-8">
-
-                <a href="<?php echo e(asset('storage'). '/' .$post->image); ?>">
-                    <img src="<?php echo e(asset('storage'). '/' .$post->image); ?>" class="w-100" alt="">
-                </a>
-            </div>
-            
             <div class="col-4">
                 <h3 class="fw-bold"><?php echo e($post->user->name); ?></h3>
                 <p><?php echo e($post->description); ?></p>
             </div>
+            <div class="">
+                <a href="<?php echo e(asset('storage/'.$image->image)); ?>">
+                    <img src="<?php echo e(asset('storage'). '/' .$image->image); ?>" class="" width="400" height="400" alt="">
+                </a>
+            </div>
+            
         </div>
     </div>
 <?php $__env->stopSection(); ?>

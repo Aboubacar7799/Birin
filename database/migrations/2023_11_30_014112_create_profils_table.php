@@ -18,7 +18,7 @@ class CreateProfilsTable extends Migration
             $table->text('description')->nullable();
             $table->string('lien')->nullable();
             $table->string('image')->nullable();
-            $table->unsignedBigInteger('user_id')->index();//c'est une clé etrangere provenant de la table user
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');//c'est une clé etrangere provenant de la table user
             $table->timestamps();
         });
     }

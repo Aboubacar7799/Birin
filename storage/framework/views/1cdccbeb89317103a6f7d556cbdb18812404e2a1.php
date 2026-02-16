@@ -45,14 +45,14 @@ unset($__errorArgs, $__bag); ?>
                     <div class="col-md-12">
                         <div class="input-group custom-file mb-3">
                             <label class="input-group-text custom-file-label" for="image" title="choisir une image">Choisir une image</label>
-                            <input type="file" name="image" id="image" class="form-control custom-file-input <?php $__errorArgs = ['image'];
+                            <input type="file" name="images[]" id="image" class="form-control custom-file-input <?php $__errorArgs = ['image'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" title="choisir une image">
+unset($__errorArgs, $__bag); ?>" title="choisir une image" multiple required>
 
                             <?php $__errorArgs = ['image'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
