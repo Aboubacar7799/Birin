@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Repository\ConversationRepository;
 use App\Repository\NotificationRepository;
 use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -48,6 +49,10 @@ class AppServiceProvider extends ServiceProvider
                 // $unreadNotifications = Notification::where('user_id', auth()->id())->where('is_read',false)->count();
                 // $view->with('unreadNotifications',$unreadNotifications);
         });
+
+        if (env('APP_ENV') === 'production') {
+        URL::forceScheme('https');
+    }
     
     }
 }
