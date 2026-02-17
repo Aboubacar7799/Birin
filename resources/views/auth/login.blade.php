@@ -11,7 +11,6 @@
                 <div class="d-flex justify-content-center mb-3">
                     <img src="{{ asset('assets/svg/birin.png') }}" width="100" height="100" class="text-center">
                 </div>
-
                 {{-- on inclu le fichier qui contient les erreurs de toutes categorie --}}
                 @include('alerts.alert-message')
 
