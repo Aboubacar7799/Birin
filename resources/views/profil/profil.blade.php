@@ -265,5 +265,5 @@
     <script>
         window.REACTION_URL = "{{ route('reaction.ajax') }}"
     </script>
-    <script src="{{ asset('assets/javaUser/post.js')}}"></script>
+    <script type="module" src="{{ asset('assets/javaUser/post.js')}}"></script>
 @endsection
