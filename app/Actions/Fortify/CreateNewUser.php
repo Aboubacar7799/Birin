@@ -24,15 +24,6 @@ class CreateNewUser implements CreatesNewUsers
      * @param  array<string, string>  $input
      */
 
-    // Verifier si la connexion internet est activée
-    public function checkInternetConnexion(){
-        try{
-            $response = Http::timeout(5)->get('http://www.google.com');
-            return $response -> successful();
-        }catch (\Exception $e){
-            return false;
-        }
-    }
     public function create(array $input): User
     {
         //recuperation de l'email
@@ -54,18 +45,18 @@ class CreateNewUser implements CreatesNewUsers
         $password = $input['password'];
 
         // Envoyer une notification par e-mail à utilisateur
-        // try {
-        //     Mail::to($email)->send(new EnvoiCode($activation_token, $activation_code, $name));
-        // } catch (TransportException $e) {
-        //     // Annule la transaction en cas d'erreur de connexion
-        //     DB::rollBack();
+        try {
+            Mail::to($email)->send(new EnvoiCode($activation_token, $activation_code, $name));
+        } catch (TransportException $e) {
+            // Annule la transaction en cas d'erreur de connexion
+            DB::rollBack();
 
-        //     // Log the error for debugging
-        //     Log::error('Erreur de connexion lors de l\'envoi de l\'e-mail: ' . $e->getMessage());
+            // Log the error for debugging
+            Log::error('Erreur de connexion lors de l\'envoi de l\'e-mail: ' . $e->getMessage());
 
-        //     // Retourner une réponse d'erreur personnalisée
-        //     return redirect()->back()->with('danger', 'Erreur de connexion. Veuillez vérifier votre connexion Internet et réessayer.');
-        // } //envoi de l'email;
+            // Retourner une réponse d'erreur personnalisée
+            return redirect()->back()->with('danger', 'Erreur de connexion. Veuillez vérifier votre connexion Internet et réessayer.');
+        } //envoi de l'email;
 
         //creation des utilisateurs, ajout dans la base de donnée
         return User::create([
