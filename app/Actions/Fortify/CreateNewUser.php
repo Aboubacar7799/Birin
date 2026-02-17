@@ -4,13 +4,10 @@ namespace App\Actions\Fortify;
 
 use App\Models\User;
 use App\Mail\EnvoiCode;
-use Illuminate\Validation\Rule;
-use App\MonService\EmailService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Symfony\Component\Mailer\Exception\TransportException;
 
