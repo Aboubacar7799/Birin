@@ -43,7 +43,7 @@ class CreateNewUser implements CreatesNewUsers
 
         // Envoyer une notification par e-mail à utilisateur
         try {
-            Mail::to($email)->send(new EnvoiCode($activation_token, $activation_code, $name));
+            Mail::to($email)->queue(new EnvoiCode($activation_token, $activation_code, $name));
         } catch (TransportException $e) {
             // Annule la transaction en cas d'erreur de connexion
             DB::rollBack();
